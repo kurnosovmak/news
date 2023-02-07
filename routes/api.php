@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\v1\User\AuthController;
+use App\Http\Controllers\v1\User\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,10 +16,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
-
 Route::post('/auth/register', [AuthController::class, 'register'])->name('auth.register');
 Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login');
 
@@ -26,4 +23,9 @@ Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login')
 Route::middleware('auth:api')->group(function (){
     Route::post('/auth/refresh', [AuthController::class, 'refresh'])->name('auth.refresh');
     Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
+});
+
+Route::apiResource('posts', PostController::class)->only(['store', 'show']);
+Route::middleware('auth:api')->group(function (){
+    Route::apiResource('posts', PostController::class)->only(['update', 'destroy']);
 });
